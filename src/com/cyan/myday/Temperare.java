@@ -8,7 +8,6 @@ import java.util.List;
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
 import org.achartengine.chart.PointStyle;
-import org.achartengine.chart.BarChart.Type;
 import org.achartengine.model.SeriesSelection;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
@@ -18,12 +17,9 @@ import com.android.demo.view.TimeBean;
 import com.cyan.myday.sql.ObjectMap;
 import com.cyan.myday.sql.tables.CalendarDateBean;
 import com.cyan.myday.sql.tables.WeekDayRecord;
-import com.cyan.myday.sql.tables.WeekDayRecord.ExeSql;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.Menu;
@@ -42,8 +38,6 @@ public class Temperare extends Activity {
 	GraphicalView wChartView;
 	GraphicalView mChartView;
 
-	CalendarDateBean CalDateBean = new CalendarDateBean();
-
 	AchartDemo achart = new AchartDemo();
 	XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
 	XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
@@ -61,7 +55,6 @@ public class Temperare extends Activity {
 
 		LinearLayout layoutWeek = (LinearLayout) findViewById(R.id.week_chart);
 
-		//String item = "起床";
 		List<ObjectMap<String, Object>> week_data = new WeekDayRecord().new ExeSql(
 				Temperare.this).retrieveWeekData(0, 0, item);
 
@@ -107,7 +100,7 @@ public class Temperare extends Activity {
 
 		List<ObjectMap<String, Object>> month_data = new WeekDayRecord().new ExeSql(
 				Temperare.this).retrieveMonthData(0, item);
-		TimeBean timeMonthData = getWeekData(week_data);
+		TimeBean timeMonthData = getMonthData(month_data);
 
 		dataset = getDataSet(timeMonthData, item);
 		renderer = getRender(timeMonthData, item, "month");
@@ -192,24 +185,22 @@ public class Temperare extends Activity {
 		double[] dayList = new double[length]; // array of day
 		double[] timeList = new double[length];
 		int day;
-		int daytime;
 		int hour;
 		double min;
 
 		for (int i = 0; i < data.size(); i++) {
 			long time = (Long) data.get(i).get(
 					WeekDayRecord.ITEM_WRITTEN_MILLSECECOND);
-			Log.d("time", String.valueOf(time));
 
 			Date NowDate = new Date();
 			NowDate.setTime(time);
 			if (i == 0) {
-				year = CalDateBean.getYear(NowDate);
-				month = CalDateBean.getMonth(NowDate);
+				year = CalendarDateBean.getYear(NowDate);
+				month = CalendarDateBean.getMonth(NowDate);
 			}
-			day = CalDateBean.getDay(NowDate);
-			hour = CalDateBean.getHour(NowDate);
-			min = (double) CalDateBean.getMin(NowDate) / 60;
+			day = CalendarDateBean.getDay(NowDate);
+			hour = CalendarDateBean.getHour(NowDate);
+			min = (double) CalendarDateBean.getMin(NowDate) / 60;
 
 			if (dayMin > day) {
 				dayMin = day;
@@ -225,7 +216,7 @@ public class Temperare extends Activity {
 			}
 
 			dayList[i] = (double) day;
-			// timeList[i] = (double)hour + min;
+
 			// 保留一位小数
 			BigDecimal b = new BigDecimal((double) hour + min);
 			timeList[i] = b.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
@@ -240,10 +231,71 @@ public class Temperare extends Activity {
 		timeData.setDay(dayList);
 		timeData.setTime(timeList);
 
-		Log.d("show data ", String.valueOf(dayMin));
-		Log.d("show data ", String.valueOf(dayMax));
-		Log.d("show data ", String.valueOf(timeMin));
-		Log.d("show data ", String.valueOf(timeMax));
+		Log.d("day min", String.valueOf(dayMax));
+		return timeData;
+	}
+	
+	/*
+	 * 处理 data 数据， 转变为 需要的time格式
+	 */
+	public TimeBean getMonthData(List<ObjectMap<String, Object>> data) {
+		int length = data.size();
+		TimeBean timeData = new TimeBean();
+
+		int year = 0;
+		int month = 0;
+		int dayMin = 31; // the min day
+		int dayMax = 0;
+		int timeMin = 24;
+		int timeMax = 0;
+		double[] dayList = new double[length]; // array of day
+		double[] timeList = new double[length];
+		int day;
+		int hour;
+		double min;
+
+		for (int i = 0; i < data.size(); i++) {
+			long time = (Long) data.get(i).get(
+					WeekDayRecord.ITEM_WRITTEN_MILLSECECOND);
+
+			Date NowDate = new Date();
+			NowDate.setTime(time);
+			if (i == 0) {
+				year = CalendarDateBean.getYear(NowDate);
+				month = CalendarDateBean.getMonth(NowDate);
+			}
+			day = CalendarDateBean.getDay(NowDate);
+			hour = CalendarDateBean.getHour(NowDate);
+			min = (double) CalendarDateBean.getMin(NowDate) / 60;
+
+			if (dayMin > day) {
+				dayMin = day;
+			}
+			if (dayMax < day) {
+				dayMax = day;
+			}
+			if (timeMin > hour) {
+				timeMin = hour;
+			}
+			if (timeMax < hour) {
+				timeMax = hour;
+			}
+
+			dayList[i] = (double) day;
+
+			// 保留一位小数
+			BigDecimal b = new BigDecimal((double) hour + min);
+			timeList[i] = b.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+
+		}
+		timeData.setYear(year);
+		timeData.setMonth(month);
+		timeData.setDayMin(dayMin);
+		timeData.setDayMax(dayMin + 30);
+		timeData.setTimeMin(timeMin - 1);
+		timeData.setTimeMax(timeMax + 1);
+		timeData.setDay(dayList);
+		timeData.setTime(timeList);
 
 		return timeData;
 	}
