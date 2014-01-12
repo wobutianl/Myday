@@ -1,0 +1,30 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    tools:context=".Temperare" >
+    
+    <LinearLayout
+        android:id="@+id/month_chart"
+        android:layout_width="fill_parent"
+        android:layout_height="300px"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/week_static_view"
+        android:orientation="horizontal"
+        android:padding="10px" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/week_chart"
+        android:layout_width="fill_parent"
+        android:layout_height="300px"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/month_chart"
+        android:background="@drawable/week_static_view"
+        android:orientation="horizontal"
+        android:padding="10px" >
+    </LinearLayout>
+
+</RelativeLayout>
