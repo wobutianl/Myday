@@ -37,7 +37,7 @@ public class SeeAllRecordActivity extends Activity {
 		setContentView(R.layout.activity_see_all_record);
 
 		data = new MyDayRecordTable().new ExeSql(this).retrieveData(null);
-//		data = new WeekDayRecord().new ExeSql(this).retrieveWeekData(0,0,"'Æð´²'");
+//		data = new WeekDayRecord().new ExeSql(this).retrieveWeekData(2014,1,12,"Æð´²");
 		Log.d("string", "string");
 
 		listView = (ListView) findViewById(R.id.see_all_record_list_view);

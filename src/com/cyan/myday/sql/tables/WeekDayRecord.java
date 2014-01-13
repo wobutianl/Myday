@@ -91,75 +91,22 @@ public class WeekDayRecord {
 			return null;
 		}
 		
-		/**
-		 * get a week data
-		 * @return
-		 */
-//		@Override
-		public List<ObjectMap<String,Object>> retrieveWeekData(int month, int week) {
+		public List<ObjectMap<String,Object>> retrieveWeekData(int year, int month, int day, String om) {
 			Calendar cal = Calendar.getInstance();
 			long firstDate = 0;
 			long lastDate  = 0;
-			if (month == 0 && week == 0){
-				lastDate = System.currentTimeMillis();
-				cal.set(Calendar.DAY_OF_WEEK, 1);
-				firstDate = cal.getTimeInMillis();
-			}
-			else{
-				cal.set(Calendar.WEEK_OF_MONTH, 1);
-				firstDate = cal.getTimeInMillis();
-				cal.set(Calendar.WEEK_OF_MONTH, 7);
-				lastDate = cal.getTimeInMillis();
-			}
 			
-			StringBuilder bd = new StringBuilder();
-			bd.append("select * from ").append(WeekDayRecord.TABLE_NAME)
-					.append(" where ")
-					.append(WeekDayRecord.ITEM_WRITTEN_MILLSECECOND)
-					.append(" between ")
-					.append(firstDate)
-					.append(" and ")
-					.append(lastDate)
-					.append(" order by ")
-					.append(WeekDayRecord.ITEM_WRITTEN_MILLSECECOND)
-					.append(" desc")
-					;
-			Log.d("SQL_RETRIEVE", bd.toString());
-
-			Cursor cursor = helper.find(bd.toString(), null);
-			List<ObjectMap<String,Object>> list = new ArrayList<ObjectMap<String,Object>>(cursor.getCount());
-
-			while (cursor.moveToNext()) {
-				ObjectMap<String, Object> _om = new ObjectMap<String, Object>();
-				_om.put(WeekDayRecord.ITEM_NAME, cursor.getString(cursor
-						.getColumnIndex(WeekDayRecord.ITEM_NAME)));
-				
-				_om.put(WeekDayRecord.ITEM_WRITTEN_MILLSECECOND,
-						cursor.getLong(cursor
-								.getColumnIndex(WeekDayRecord.ITEM_WRITTEN_MILLSECECOND)));
-				_om.put(WeekDayRecord.KEY_ID, cursor.getInt(cursor
-						.getColumnIndex(WeekDayRecord.KEY_ID)));
-				list.add(_om);
-				Log.d("weekDay_class", _om.toString());
-			}
-			return list;
-		}
-		
-		public List<ObjectMap<String,Object>> retrieveWeekData(int month, int week, String om) {
-			Calendar cal = Calendar.getInstance();
-			long firstDate = 0;
-			long lastDate  = 0;
-			if (month == 0 && week == 0){
-				lastDate = System.currentTimeMillis();
-				cal.set(Calendar.DAY_OF_WEEK, 1);
-				firstDate = cal.getTimeInMillis();
-			}
-			else{
-				cal.set(Calendar.WEEK_OF_MONTH, 1);
-				firstDate = cal.getTimeInMillis();
-				cal.set(Calendar.WEEK_OF_MONTH, 7);
-				lastDate = cal.getTimeInMillis();
-			}
+	        cal.set(Calendar.YEAR, year);     
+	        cal.set(Calendar.MONTH, month-1);     
+	        cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, day/7); 
+	        cal.set(Calendar.DAY_OF_WEEK, 1);
+			firstDate = cal.getTimeInMillis();
+			
+			cal.set(Calendar.YEAR, year);     
+	        cal.set(Calendar.MONTH, month-1); 
+	        cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, day/7+1); 
+	        cal.set(Calendar.DAY_OF_WEEK, 7);
+			lastDate = cal.getTimeInMillis();	
 			
 			StringBuilder bd = new StringBuilder();
 			bd.append("select * from ").append(WeekDayRecord.TABLE_NAME)
@@ -173,9 +120,6 @@ public class WeekDayRecord {
 					.append(firstDate)
 					.append(" and ")
 					.append(lastDate)
-					.append(" order by ")
-					.append(WeekDayRecord.ITEM_WRITTEN_MILLSECECOND)
-					.append(" desc")
 					;
 			Log.d("SQL_RETRIEVE", bd.toString());
 
@@ -197,22 +141,19 @@ public class WeekDayRecord {
 			return list;
 		}
 		
-		public List<ObjectMap<String,Object>> retrieveMonthData( int month, String om) {
+		public List<ObjectMap<String,Object>> retrieveMonthData(int year, int month, int day, String om) {
 			Calendar cal = Calendar.getInstance();
+			long lastDate = 0;
 			long firstDate = 0;
-			long lastDate  = 0;
-			if (month == 0 ){
-				lastDate = System.currentTimeMillis();
-				cal.set(Calendar.DAY_OF_MONTH, 1);
-				firstDate = cal.getTimeInMillis();
-			}
-			else{
-				cal.set(Calendar.MONTH, month);
-				cal.set(Calendar.DAY_OF_MONTH, 1);
-				firstDate = cal.getTimeInMillis();
-				cal.set(Calendar.DAY_OF_MONTH, -1);
-				lastDate = cal.getTimeInMillis();
-			}
+	        cal.set(Calendar.YEAR, year);     
+	        cal.set(Calendar.MONTH, month-1);     
+	        cal.set(Calendar.DAY_OF_MONTH,cal.getMinimum(Calendar.DATE));  
+			firstDate = cal.getTimeInMillis();
+			
+			cal.set(Calendar.YEAR, year);     
+	        cal.set(Calendar.MONTH, month-1); 
+	        cal.set(Calendar.DAY_OF_MONTH,cal.getActualMaximum(Calendar.DATE));
+			lastDate = cal.getTimeInMillis();
 			
 			StringBuilder bd = new StringBuilder();
 			bd.append("select * from ").append(WeekDayRecord.TABLE_NAME)
@@ -226,9 +167,6 @@ public class WeekDayRecord {
 					.append(firstDate)
 					.append(" and ")
 					.append(lastDate)
-					.append(" order by ")
-					.append(WeekDayRecord.ITEM_WRITTEN_MILLSECECOND)
-					.append(" desc")
 					;
 			Log.d("SQL_RETRIEVE", bd.toString());
 

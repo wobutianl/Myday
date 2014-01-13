@@ -57,7 +57,7 @@ public class CurveChart {
 	public Intent getIntent(Context context, String item) {
 		
 		List<ObjectMap<String, Object>> data = new WeekDayRecord().
-				new ExeSql(context).retrieveWeekData(0,0, item);
+				new ExeSql(context).retrieveWeekData(0, 0,0, item);
 		int length = data.size();  			 //have sevral records
 		TimeBean timeData = getWeekData(data);
 		

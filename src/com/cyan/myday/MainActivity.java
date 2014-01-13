@@ -15,6 +15,7 @@ import com.cyan.myday.adapters.GridViewAdapter;
 import com.cyan.myday.sql.ObjectMap;
 import com.cyan.myday.sql.tables.CommandsTable;
 import com.cyan.myday.sql.tables.MyDayRecordTable;
+import com.cyan.myday.sql.tables.ReadTxt;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -339,7 +340,18 @@ public class MainActivity extends Activity {
 		} else if (item.getItemId() == R.id.oneMonth) {
 			test_login();
 		}else if (item.getItemId() == R.id.oneYear) {
-			test_getQuota();
+			Intent intt = new Intent();
+			intt.setAction(FileList.fileList);
+			startActivity(intt);
+			
+//			MyDayRecordTable myday = new MyDayRecordTable();
+//			MyDayRecordTable.ExeSql es = myday.new ExeSql(
+//					MainActivity.this);
+//			es.AlterAddCol("MyGPSLongitude", "double");
+//			es.AlterAddCol("MyGPSLatitude", "double");
+//			Log.d("alter table", "true");
+			
+//			test_getQuota();
 		}
 			else if (item.getItemId() == R.id.export_record) {
 			try {

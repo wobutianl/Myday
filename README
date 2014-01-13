@@ -1,2 +1,12 @@
 describe:
     android app
+	fix the day of the week .(origin static show can not be used in Sunday)
+	add the baiduyun interface, just login and get quate(token access)
+	
+2014-1-13:
+	添加SD卡浏览功能。
+	
+	增加文件 导入功能（从SD卡中读入数据） 
+	还可以按照数据 识别出你设定了什么事件（生成相应按钮）
+	
+	

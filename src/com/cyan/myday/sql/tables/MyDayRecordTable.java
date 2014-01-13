@@ -32,13 +32,23 @@ public class MyDayRecordTable {
 	public static final String ITEM_NAME = "MyDayRecordTableItemName";
 	// 时间
 	public static final String ITEM_WRITTEN_MILLSECECOND = "MyDayRecordTableWrittenTime";
+	//GPS
+	public static final String GPS_LONGITUDE = "MyGPSLongitude";
+	public static final String GPS_LATITUDE = "MyGPSLatitude";
 
 	// 创建语句
 	private final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS "
 			+ TABLE_NAME + " ( " + KEY_ID
 			+ " integer primary key autoincrement, " + ITEM_NAME
 			+ " varchar not null, " + ITEM_WRITTEN_MILLSECECOND
-			+ " bigint not null)";
+			+ " bigint not null) ";
+	
+//	private final String CREATE_SQL = "CREATE TABLE IF NOT EXISTS "
+//			+ TABLE_NAME + " ( " + KEY_ID
+//			+ " integer primary key autoincrement, " + ITEM_NAME
+//			+ " varchar not null, " + ITEM_WRITTEN_MILLSECECOND
+//			+ " bigint not null, " + GPS_LATITUDE + " double not null, " 
+//			+ GPS_LONGITUDE + "double not null )";
 
 	/**
 	 * 封装sql操作
@@ -174,6 +184,15 @@ public class MyDayRecordTable {
 			return helper.delete(MyDayRecordTable.TABLE_NAME, bd.toString(),
 					new String[] { String.valueOf(om
 							.getIntegerValue(MyDayRecordTable.KEY_ID)) });
+		}
+		
+		public boolean AlterAddCol(String col_name, String data_type) {
+			StringBuilder bd = new StringBuilder();
+			bd.append("ALTER TABLE ")
+				.append(MyDayRecordTable.TABLE_NAME)
+				.append(" ADD ").append(col_name).append("  ")
+				.append(data_type).append(" not null");
+			return true;
 		}
 	}
 

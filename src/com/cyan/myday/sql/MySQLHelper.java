@@ -145,6 +145,19 @@ public class MySQLHelper extends SQLiteOpenHelper {
 		}
 		return true;
 	}
+	
+	public boolean alter(String alterString) {
+		try {
+			openConnection();
+			db.execSQL(alterString);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			closeConnection();
+		}
+		return true;
+	}
 
 	/**
 	 * ²éÑ¯²Ù×÷

@@ -9,8 +9,9 @@
     <LinearLayout
         android:id="@+id/week_chart"
         android:layout_width="fill_parent"
-        android:layout_height="300px"
-        android:layout_centerHorizontal="true"
+        android:layout_height="350px"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:background="@drawable/week_static_view"
         android:orientation="horizontal"
         android:padding="10px" >
@@ -19,7 +20,7 @@
     <LinearLayout
         android:id="@+id/month_chart"
         android:layout_width="fill_parent"
-        android:layout_height="300px"
+        android:layout_height="340px"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/week_chart"
         android:background="@drawable/week_static_view"

@@ -2,6 +2,7 @@ package com.cyan.myday;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -52,16 +53,26 @@ public class Temperare extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_temperare);
+		
+		Long currentTime = System.currentTimeMillis();
+		Calendar cal = Calendar.getInstance();
+		Date currentDate = new Date();
+		currentDate.setTime(currentTime);
+		cal.setTime(currentDate);
+		int year = cal.get(Calendar.YEAR);
+       	int month = cal.get(Calendar.MONTH);
+       	int day = cal.get(Calendar.DAY_OF_MONTH);
+       	Log.d("day", String.valueOf(year) + String.valueOf(month));
 
 		LinearLayout layoutWeek = (LinearLayout) findViewById(R.id.week_chart);
 
 		List<ObjectMap<String, Object>> week_data = new WeekDayRecord().new ExeSql(
-				Temperare.this).retrieveWeekData(0, 0, item);
+				Temperare.this).retrieveWeekData(year, month+1, day, item);
 
 		TimeBean timeWeekData = getWeekData(week_data);
 
 		dataset = getDataSet(timeWeekData, item);
-		renderer = getRender(timeWeekData, item, "week");
+		renderer = getRender(timeWeekData, item, "周",8);
 		wChartView = ChartFactory.getLineChartView(this, dataset, renderer);
 
 		layoutWeek.addView(wChartView, new LayoutParams(
@@ -99,11 +110,11 @@ public class Temperare extends Activity {
 		LinearLayout layoutMonth = (LinearLayout) findViewById(R.id.month_chart);
 
 		List<ObjectMap<String, Object>> month_data = new WeekDayRecord().new ExeSql(
-				Temperare.this).retrieveMonthData(0, item);
-		TimeBean timeMonthData = getMonthData(month_data);
+				Temperare.this).retrieveMonthData(year, month+1, day, item);
+		TimeBean timeMonthData = getMonthData(month_data); 
 
 		dataset = getDataSet(timeMonthData, item);
-		renderer = getRender(timeMonthData, item, "month");
+		renderer = getRender(timeMonthData, item, "月",15);
 		mChartView = ChartFactory.getLineChartView(this, dataset, renderer);
 
 		layoutMonth.addView(mChartView, new LayoutParams(
@@ -152,14 +163,22 @@ public class Temperare extends Activity {
 
 		return dataset;
 	}
-
+	/**
+	 * 
+	 * @param timeData
+	 * @param item
+	 * @param xlabel
+	 * @param xLabel x轴分为几分
+	 * @return
+	 */
 	public XYMultipleSeriesRenderer getRender(TimeBean timeData, String item,
-			String xlabel) {
+			String xlabel, int xLabel) {
 		colors = new int[] { Color.YELLOW };
 		styles = new PointStyle[] { PointStyle.DIAMOND };
 		renderer = achart.buildLineRenderer(colors, styles);
 		renderer.setZoomButtonsVisible(true);
 		renderer.setShowGrid(true);
+		renderer.setXLabels(xLabel);
 
 		achart.setChartSettings(renderer, item + xlabel + "统计", xlabel, "Time",
 				timeData.getDayMin(), timeData.getDayMax(),
@@ -174,6 +193,7 @@ public class Temperare extends Activity {
 	 */
 	public TimeBean getWeekData(List<ObjectMap<String, Object>> data) {
 		int length = data.size();
+		Log.d("data length", String.valueOf(length));
 		TimeBean timeData = new TimeBean();
 
 		int year = 0;
@@ -204,6 +224,7 @@ public class Temperare extends Activity {
 
 			if (dayMin > day) {
 				dayMin = day;
+				Log.d("day ", String.valueOf(day));
 			}
 			if (dayMax < day) {
 				dayMax = day;
@@ -224,14 +245,17 @@ public class Temperare extends Activity {
 		}
 		timeData.setYear(year);
 		timeData.setMonth(month);
-		timeData.setDayMin(dayMin);
+		timeData.setDayMin(dayMin-1);
 		timeData.setDayMax(dayMin + 7);
 		timeData.setTimeMin(timeMin - 1);
 		timeData.setTimeMax(timeMax + 1);
 		timeData.setDay(dayList);
 		timeData.setTime(timeList);
 
-		Log.d("day min", String.valueOf(dayMax));
+		Log.d("day man", String.valueOf(dayMax));
+		Log.d("time min", String.valueOf(timeMin));
+		Log.d("day min", String.valueOf(dayMin));
+		Log.d("time min", String.valueOf(timeMax));
 		return timeData;
 	}
 	
@@ -241,6 +265,7 @@ public class Temperare extends Activity {
 	public TimeBean getMonthData(List<ObjectMap<String, Object>> data) {
 		int length = data.size();
 		TimeBean timeData = new TimeBean();
+		Log.d("data length", String.valueOf(length));
 
 		int year = 0;
 		int month = 0;
@@ -297,6 +322,11 @@ public class Temperare extends Activity {
 		timeData.setDay(dayList);
 		timeData.setTime(timeList);
 
+		Log.d("mday man", String.valueOf(dayMax));
+		Log.d("mtime min", String.valueOf(timeMin));
+		Log.d("mday min", String.valueOf(dayMin));
+		Log.d("mtime min", String.valueOf(timeMax));
+		
 		return timeData;
 	}
 
